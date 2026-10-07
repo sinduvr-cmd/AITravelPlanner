@@ -895,7 +895,7 @@ if st.session_state.get("has_run_planner", False):
                 <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
                     <tr style="border-bottom: 1px solid #f1f5f9;">
                         <td style="padding: 0.55rem 0; color: #64748b; font-weight: 500;">Destination</td>
-                        <td style="padding: 0.55rem 0; font-weight: 700; color: #0f172a; text-align: right;">📍 {current_destination}</td>
+                        <td style="padding: 0.55rem 0; font-weight: 700; color: #0f172a; text-align: right;">📍 {current_destination.strip().title()}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #f1f5f9;">
                         <td style="padding: 0.55rem 0; color: #64748b; font-weight: 500;">Dates & Duration</td>
@@ -1023,7 +1023,7 @@ if st.session_state.get("has_run_planner", False):
                             <div>
                                 <div class="accomm-title" title="{prop_name}">{prop_name}</div>
                                 <div class="accomm-meta-row">
-                                    <span>📍 {current_destination}</span>
+                                    <span>📍 {current_destination.strip().title()}</span>
                                     <span style="font-weight: 600; color: #0284c7;">{stay_nights} Night{'s' if stay_nights > 1 else ''} • {current_rooms} Rm</span>
                                 </div>
                             </div>

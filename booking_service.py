@@ -729,6 +729,315 @@ def get_themed_travel_photo(destination: str, interests: Optional[List[str]], ac
 # Demo Mode & Curated Stays Generator
 # ==============================================================================
 
+# Real, iconic accommodation catalog for top global & Indian travel destinations
+DESTINATION_REAL_STAYS: Dict[str, Any] = {
+    "kochi": [
+        {
+            "name": "Grand Hyatt Kochi Bolgatty",
+            "type": "Luxury Waterfront Resort",
+            "score": 9.3,
+            "image": "https://images.unsplash.com/photo-1580977276076-ae4b8c219b8e?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.25
+        },
+        {
+            "name": "Brunton Boatyard - CGH Earth",
+            "type": "Colonial Heritage Hotel",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.0
+        },
+        {
+            "name": "Forte Kochi Heritage Boutique Hotel",
+            "type": "Boutique Heritage Villa",
+            "score": 9.2,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.85
+        }
+    ],
+    "cochin": "kochi",
+    "fort kochi": "kochi",
+    "ernakulam": "kochi",
+    "goa": [
+        {
+            "name": "The Leela Goa Beach Resort & Spa",
+            "type": "5-Star Beach Resort",
+            "score": 9.4,
+            "image": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.35
+        },
+        {
+            "name": "Taj Exotica Resort & Spa Goa",
+            "type": "Mediterranean Luxury Resort",
+            "score": 9.3,
+            "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.1
+        },
+        {
+            "name": "Alila Diwa Goa - A Hyatt Luxury Resort",
+            "type": "Contemporary Tropical Resort",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.85
+        }
+    ],
+    "manali": [
+        {
+            "name": "The Himalayan Castle Resort & Spa",
+            "type": "Victorian Castle Resort",
+            "score": 9.3,
+            "image": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.2
+        },
+        {
+            "name": "Span Resort & Spa Manali",
+            "type": "Riverside Nature Sanctuary",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.0
+        },
+        {
+            "name": "Larisa Resort & Orchard Cottages",
+            "type": "Luxury Alpine Retreat",
+            "score": 9.0,
+            "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.85
+        }
+    ],
+    "munnar": [
+        {
+            "name": "Fragrant Nature Munnar",
+            "type": "Tea Plantation Luxury Hideaway",
+            "score": 9.3,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.15
+        },
+        {
+            "name": "Blanket Hotel & Spa Munnar",
+            "type": "Attukad Waterfall Eco Resort",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.0
+        },
+        {
+            "name": "Elixir Hills Suites Resort",
+            "type": "Rainforest Valley Sanctuary",
+            "score": 9.2,
+            "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.85
+        }
+    ],
+    "jaipur": [
+        {
+            "name": "The Oberoi Rajvilas Jaipur",
+            "type": "Palatial Luxury Resort",
+            "score": 9.6,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.4
+        },
+        {
+            "name": "Rambagh Palace - Taj Heritage",
+            "type": "Royal Heritage Palace",
+            "score": 9.5,
+            "image": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.25
+        },
+        {
+            "name": "Alsisar Haveli Boutique Heritage",
+            "type": "Rajputana Heritage Haveli",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.8
+        }
+    ],
+    "mumbai": [
+        {
+            "name": "The Taj Mahal Palace, Mumbai",
+            "type": "Iconic Waterfront Heritage Hotel",
+            "score": 9.5,
+            "image": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.35
+        },
+        {
+            "name": "The St. Regis Mumbai",
+            "type": "Luxury Skyline Suites",
+            "score": 9.2,
+            "image": "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.1
+        },
+        {
+            "name": "JW Marriott Mumbai Juhu",
+            "type": "Beachfront Luxury Resort",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.9
+        }
+    ],
+    "delhi": [
+        {
+            "name": "The Imperial, New Delhi",
+            "type": "Art Deco Heritage Luxury Hotel",
+            "score": 9.3,
+            "image": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.2
+        },
+        {
+            "name": "The Leela Palace New Delhi",
+            "type": "Grand Royal Palace Hotel",
+            "score": 9.4,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.3
+        },
+        {
+            "name": "Haveli Dharampura",
+            "type": "Restored Mughal Boutique Haveli",
+            "score": 9.0,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.85
+        }
+    ],
+    "new delhi": "delhi",
+    "bangalore": [
+        {
+            "name": "The Leela Palace Bengaluru",
+            "type": "Grand Royal Palace Hotel",
+            "score": 9.4,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.3
+        },
+        {
+            "name": "Taj West End Bengaluru",
+            "type": "Heritage Garden Sanctuary Hotel",
+            "score": 9.2,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.05
+        },
+        {
+            "name": "The Ritz-Carlton, Bangalore",
+            "type": "Contemporary Luxury Hotel",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.9
+        }
+    ],
+    "bengaluru": "bangalore",
+    "ooty": [
+        {
+            "name": "Savoy - IHCL SeleQtions Ooty",
+            "type": "Colonial Heritage Cottage Hotel",
+            "score": 9.2,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.2
+        },
+        {
+            "name": "Fernhills Royal Summer Palace",
+            "type": "Royal Palace Heritage",
+            "score": 9.0,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.0
+        },
+        {
+            "name": "Kurumba Village Spice Plantation Resort",
+            "type": "Eco Nature Sanctuary",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.85
+        }
+    ],
+    "wayanad": [
+        {
+            "name": "Vythiri Rainforest Treehouse & Resort",
+            "type": "Rainforest Treehouse & Eco Resort",
+            "score": 9.2,
+            "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.15
+        },
+        {
+            "name": "Morickap Resort Wayanad",
+            "type": "Swiss Chalet Valley Resort",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.95
+        },
+        {
+            "name": "The Windflower Resort & Spa Vythiri",
+            "type": "Coffee Plantation Retreat",
+            "score": 8.9,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.8
+        }
+    ],
+    "paris": [
+        {
+            "name": "Hôtel Plaza Athénée",
+            "type": "Haute Couture Palace Hotel",
+            "score": 9.5,
+            "image": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.4
+        },
+        {
+            "name": "Pullman Paris Tour Eiffel",
+            "type": "Contemporary View Hotel",
+            "score": 8.9,
+            "image": "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.1
+        },
+        {
+            "name": "Le Grand Quartier Paris",
+            "type": "Boutique Saint-Martin Stay",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.8
+        }
+    ],
+    "bali": [
+        {
+            "name": "AYANA Resort and Spa Bali",
+            "type": "Ocean Cliff Luxury Resort",
+            "score": 9.3,
+            "image": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.3
+        },
+        {
+            "name": "Padma Resort Ubud",
+            "type": "Bamboo Forest Sanctuary",
+            "score": 9.4,
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.1
+        },
+        {
+            "name": "The Seminyak Beach Resort & Spa",
+            "type": "Tropical Beachfront Villas",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.85
+        }
+    ],
+    "dubai": [
+        {
+            "name": "Atlantis, The Palm Dubai",
+            "type": "Iconic Oceanfront Island Resort",
+            "score": 9.2,
+            "image": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.35
+        },
+        {
+            "name": "Jumeirah Al Qasr",
+            "type": "Arabian Palace Luxury Stay",
+            "score": 9.4,
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 1.15
+        },
+        {
+            "name": "Address Downtown Dubai",
+            "type": "Skyline View Boutique Suites",
+            "score": 9.1,
+            "image": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop&q=80",
+            "multiplier": 0.85
+        }
+    ]
+}
+
+
 def generate_demo_accommodations(
     destination: str,
     checkin_date: date,
@@ -739,64 +1048,110 @@ def generate_demo_accommodations(
     interests: Optional[List[str]] = None
 ) -> List[Dict[str, Any]]:
     """
-    Generates 3 top-tier, realistic accommodation recommendations tailored to the
-    destination, dates, party size, budget bracket, and selected travel interests.
-    Used for Demo Mode when Booking.com Demand API credentials are not configured.
+    Generates 3 top-tier, realistic accommodation recommendations tailored specifically
+    to the destination, dates, party size, budget bracket, and selected travel interests.
+    Provides authentic real properties for major destinations and synthesized custom stays
+    for any entered location.
     """
     dest_clean = destination.strip().title() if destination else "Your Destination"
+    dest_key = destination.strip().lower()
     nights = max(1, (checkout_date - checkin_date).days)
     interests = interests or ["Beach"]
 
     # Calculate baseline total price allocated to accommodation based on user's budget
     target_stay_cost = calculate_target_accommodation_price(budget, nights)
-    
-    # Calibrated multipliers for 3 distinct tiers: Value/Boutique, Signature, Ultra-Premium
-    tier_multipliers = [0.75, 1.0, 1.35]
+    room_factor = 1.0 + (max(1, number_of_rooms) - 1) * 0.75
 
-    # Pre-crafted archetypes matching themes
-    beach_templates = [
-        (f"Azure Palms Ocean Resort & Spa", "Luxury Resort", 9.4, "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&auto=format&fit=crop&q=80"),
-        (f"The Grand Shoreline Boutique Hotel", "Boutique Hotel", 8.9, "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&auto=format&fit=crop&q=80"),
-        (f"Coastal Haven Private Villas", "Private Villa", 9.1, "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop&q=80"),
-    ]
-
-    nature_templates = [
-        (f"Pinecrest Highlands Sanctuary & Spa", "Eco Resort", 9.3, "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80"),
-        (f"The Green Canopy Heritage Estate", "Heritage Stay", 8.8, "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80"),
-        (f"Valley View Forest Lodge", "Nature Lodge", 9.0, "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&auto=format&fit=crop&q=80"),
-    ]
-
-    adventure_templates = [
-        (f"Summit Ridge Basecamp & Lodge", "Mountain Lodge", 9.2, "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&auto=format&fit=crop&q=80"),
-        (f"Wildwood Expedition Suites", "Adventure Retreat", 8.7, "https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=800&auto=format&fit=crop&q=80"),
-        (f"Outback Riverfront Camp & Villas", "Glamping Resort", 8.9, "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&auto=format&fit=crop&q=80"),
-    ]
-
-    urban_templates = [
-        (f"The Royal Grand {dest_clean} Hotel", "Luxury Hotel", 9.3, "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop&q=80"),
-        (f"{dest_clean} City Centre Boutique Suites", "Boutique Hotel", 8.9, "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&auto=format&fit=crop&q=80"),
-        (f"Heritage Courtyard Suites {dest_clean}", "Serviced Residence", 8.8, "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&auto=format&fit=crop&q=80"),
-    ]
-
-    # Select template bank based on interests
-    if "Beach" in interests:
-        primary_templates = beach_templates
-    elif "Nature" in interests:
-        primary_templates = nature_templates
-    elif "Adventure" in interests:
-        primary_templates = adventure_templates
+    # Check for curated authentic properties
+    resolved_stays = None
+    if dest_key in DESTINATION_REAL_STAYS:
+        entry = DESTINATION_REAL_STAYS[dest_key]
+        if isinstance(entry, str):
+            resolved_stays = DESTINATION_REAL_STAYS.get(entry)
+        else:
+            resolved_stays = entry
     else:
-        primary_templates = urban_templates
+        # Check partial matching (e.g. "fort kochi", "kochi kerala", "north goa")
+        for k, v in DESTINATION_REAL_STAYS.items():
+            if isinstance(v, list) and (k in dest_key or dest_key in k):
+                resolved_stays = v
+                break
 
     results = []
+
+    if resolved_stays and len(resolved_stays) >= 3:
+        for idx in range(3):
+            item = resolved_stays[idx]
+            mult = item.get("multiplier", 1.0)
+            price_num = round(target_stay_cost * mult * room_factor, -2)
+            booking_url = format_booking_url(
+                destination=destination,
+                checkin=checkin_date,
+                checkout=checkout_date,
+                adults=number_of_adults,
+                rooms=number_of_rooms
+            )
+            results.append({
+                "id": f"stay_{dest_key}_{idx+1}",
+                "name": item["name"],
+                "accommodation_type": item["type"],
+                "review_score": item["score"],
+                "review_label": get_review_label(item["score"]),
+                "price": float(price_num),
+                "currency": "INR",
+                "formatted_price": format_currency(price_num, "INR"),
+                "image_url": item["image"],
+                "booking_url": booking_url,
+                "source": "curated_destination"
+            })
+        return results
+
+    # Dynamic synthesis for any other town or destination entered by user
+    theme_archetypes = [
+        (
+            f"The Grand {dest_clean} Heritage Palace & Spa",
+            "Luxury Palace Resort",
+            9.4,
+            "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+            1.25
+        ),
+        (
+            f"{dest_clean} Waterfront Boutique Hotel & Suites",
+            "Boutique Hotel",
+            9.1,
+            "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&auto=format&fit=crop&q=80",
+            1.0
+        ),
+        (
+            f"{dest_clean} Scenic Sanctuary & Private Villas",
+            "Private Villa Retreat",
+            8.9,
+            "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop&q=80",
+            0.8
+        )
+    ]
+
+    # Customize titles if Nature or Adventure are prioritized
+    if "Nature" in interests and "Beach" not in interests:
+        theme_archetypes[1] = (
+            f"The Green Canopy Eco Lodge • {dest_clean}",
+            "Eco Nature Lodge",
+            9.2,
+            "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=80",
+            0.95
+        )
+    elif "Adventure" in interests and "Beach" not in interests:
+        theme_archetypes[2] = (
+            f"{dest_clean} Summit Expedition Basecamp",
+            "Adventure Lodge & Chalets",
+            9.0,
+            "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&auto=format&fit=crop&q=80",
+            0.85
+        )
+
     for idx in range(3):
-        name_prefix, prop_type, base_score, img_url = primary_templates[idx]
-        prop_name = f"{name_prefix} • {dest_clean}"
-        
-        # Calculate calculated stay price adjusted for party rooms & adults
-        room_factor = 1.0 + (max(1, number_of_rooms) - 1) * 0.75
-        price_num = round(target_stay_cost * tier_multipliers[idx] * room_factor, -2)
-        
+        p_name, p_type, p_score, p_img, p_mult = theme_archetypes[idx]
+        price_num = round(target_stay_cost * p_mult * room_factor, -2)
         booking_url = format_booking_url(
             destination=destination,
             checkin=checkin_date,
@@ -804,19 +1159,18 @@ def generate_demo_accommodations(
             adults=number_of_adults,
             rooms=number_of_rooms
         )
-
         results.append({
-            "id": f"demo_{idx+1}",
-            "name": prop_name,
-            "accommodation_type": prop_type,
-            "review_score": base_score,
-            "review_label": get_review_label(base_score),
+            "id": f"synth_{idx+1}",
+            "name": p_name,
+            "accommodation_type": p_type,
+            "review_score": p_score,
+            "review_label": get_review_label(p_score),
             "price": float(price_num),
             "currency": "INR",
             "formatted_price": format_currency(price_num, "INR"),
-            "image_url": img_url,
+            "image_url": p_img,
             "booking_url": booking_url,
-            "source": "demo"
+            "source": "curated_custom"
         })
 
     return results
