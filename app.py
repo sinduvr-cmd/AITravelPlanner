@@ -610,7 +610,8 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("#### 🏨 Booking.com API Status")
     
-    api_is_live = booking_service.is_booking_api_configured()
+    cred_status = booking_service.get_credentials_status()
+    api_is_live = cred_status["is_ready"]
     if api_is_live:
         st.markdown(
             """
@@ -620,7 +621,7 @@ with st.sidebar:
             """,
             unsafe_allow_html=True
         )
-        st.caption("Authenticated securely using backend environment credentials.")
+        st.caption("Authenticated securely using backend credentials.")
     else:
         st.markdown(
             """
@@ -630,13 +631,41 @@ with st.sidebar:
             """,
             unsafe_allow_html=True
         )
-        with st.expander("🔑 How to connect Live API", expanded=False):
-            st.caption(
-                "Set the following environment variables in your server environment:\n"
-                "- `BOOKING_API_TOKEN`\n"
-                "- `BOOKING_AFFILIATE_ID`\n\n"
-                "Credentials are never exposed to the frontend or user interface."
-            )
+
+    with st.expander("🔑 Booking.com API Credentials", expanded=not api_is_live):
+        st.markdown(
+            "To view live property rates from Booking.com Demand API, enter your credentials below "
+            "or place them in a `.env` file:"
+        )
+        t_status = "✅ Set" if cred_status["token_configured"] else "❌ Missing"
+        a_status = "✅ Set" if cred_status["affiliate_configured"] else "❌ Missing"
+        st.markdown(f"- **TOKEN:** `{t_status}`\n- **AFFILIATE ID:** `{a_status}`")
+
+        input_token = st.text_input(
+            "API Bearer Token",
+            type="password",
+            placeholder="Paste your BOOKING_API_TOKEN...",
+            help="Securely stored in backend session memory, never exposed.",
+            key="sb_input_token"
+        )
+        input_affiliate = st.text_input(
+            "Affiliate ID",
+            placeholder="e.g. 1234567",
+            help="Your numeric BOOKING_AFFILIATE_ID.",
+            key="sb_input_affiliate"
+        )
+        if st.button("🔌 Save & Connect API", use_container_width=True):
+            if input_token.strip() and input_affiliate.strip():
+                import os
+                os.environ["BOOKING_API_TOKEN"] = input_token.strip()
+                os.environ["BOOKING_AFFILIATE_ID"] = input_affiliate.strip()
+                st.session_state["saved_accommodations"] = None
+                st.success("Credentials saved to session! Click 'Generate Travel Plan' to fetch live stays.")
+                st.rerun()
+            else:
+                st.warning("Please provide both API Token and Affiliate ID.")
+
+        st.caption("Tip: You can also copy `.env.example` to `.env` in the project root.")
 
     st.markdown("---")
     st.markdown("#### 💡 Budget Tier Reference")

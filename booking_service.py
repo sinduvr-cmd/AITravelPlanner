@@ -20,15 +20,65 @@ import requests
 DEFAULT_BASE_URL = "https://demandapi.booking.com/3.2"
 REQUEST_TIMEOUT_SECONDS = 8
 
+# Curated mapping of major global destinations to standard Booking.com city IDs
+POPULAR_DESTINATIONS = {
+    "goa": -2094200,
+    "paris": -1456928,
+    "london": -2601889,
+    "tokyo": -246227,
+    "new york": 20088325,
+    "dubai": -782831,
+    "bali": 900040000,
+    "singapore": -73635,
+    "manali": -2103444,
+    "mumbai": -2092174,
+    "bangalore": -2090184,
+    "bengaluru": -2090184,
+    "delhi": -2106102,
+    "new delhi": -2106102,
+    "rome": -126693,
+    "amsterdam": -2140479,
+    "barcelona": -372490,
+    "bangkok": -3414440,
+    "jaipur": -2098670,
+    "shimla": -2111003,
+    "agra": -2088031,
+    "kerala": -2099351,
+    "sydney": -1603135,
+}
+
+
+def _load_dotenv_if_exists() -> None:
+    """
+    Safely loads environment variables from a local .env file in the workspace
+    if one exists, ensuring local developer configuration works seamlessly.
+    """
+    env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    if os.path.exists(env_file):
+        try:
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        k = k.strip()
+                        v = v.strip().strip("'\"")
+                        if k and k not in os.environ:
+                            os.environ[k] = v
+        except Exception:
+            pass
+
 
 def get_booking_credentials() -> Tuple[Optional[str], Optional[str], str]:
     """
-    Safely retrieves Booking.com Demand API credentials from environment variables
-    or Streamlit secrets without exposing them.
+    Safely retrieves Booking.com Demand API credentials from environment variables,
+    .env file, or Streamlit secrets without exposing them.
 
     Returns:
         (api_token, affiliate_id, base_url)
     """
+    _load_dotenv_if_exists()
+
     token = os.environ.get("BOOKING_API_TOKEN")
     affiliate_id = os.environ.get("BOOKING_AFFILIATE_ID")
     base_url = os.environ.get("BOOKING_API_BASE_URL", DEFAULT_BASE_URL)
@@ -60,6 +110,19 @@ def is_booking_api_configured() -> bool:
     """
     token, affiliate_id, _ = get_booking_credentials()
     return bool(token and affiliate_id)
+
+
+def get_credentials_status() -> Dict[str, Any]:
+    """
+    Returns diagnostics on API credential availability without exposing secret values.
+    """
+    _load_dotenv_if_exists()
+    token, affiliate_id, _ = get_booking_credentials()
+    return {
+        "token_configured": bool(token),
+        "affiliate_configured": bool(affiliate_id),
+        "is_ready": bool(token and affiliate_id)
+    }
 
 
 def _build_auth_headers(token: str, affiliate_id: str) -> Dict[str, str]:
@@ -140,6 +203,14 @@ def search_locations(
                     "name": first_match.get("name", clean_dest),
                     "raw": first_match
                 }
+
+            if clean_dest.lower() in POPULAR_DESTINATIONS:
+                return {
+                    "success": True,
+                    "city_id": POPULAR_DESTINATIONS[clean_dest.lower()],
+                    "name": clean_dest.title(),
+                    "source": "popular_destinations"
+                }
             
             return {
                 "success": False,
@@ -207,6 +278,15 @@ def search_available_accommodations(
     # Step 1: Resolve destination to an API location ID
     loc_result = search_locations(destination, token=token, affiliate_id=affiliate_id, base_url=base_url)
     city_id = loc_result.get("city_id") if loc_result.get("success") else None
+    country_code = loc_result.get("country") if loc_result.get("success") else None
+
+    if not city_id and destination.strip().lower() in POPULAR_DESTINATIONS:
+        city_id = POPULAR_DESTINATIONS[destination.strip().lower()]
+
+    if city_id:
+        search_payload["city"] = city_id
+    elif country_code:
+        search_payload["country"] = country_code
 
     # Step 2: Query /accommodations/search
     search_url = f"{base_url}/accommodations/search"
