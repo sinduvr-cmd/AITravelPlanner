@@ -2,6 +2,8 @@
 
 A modern, responsive single-page travel planning web application built with Python and Streamlit.
 
+🌐 **Live Application:** [https://aitravelplanner-cgbcs3jvqusfwjrd8u84sa.streamlit.app/](https://aitravelplanner-cgbcs3jvqusfwjrd8u84sa.streamlit.app/)
+
 ## Overview
 
 **AI Travel Planner** helps travelers configure itineraries and calculate customized recommendations without requiring any external APIs. It implements pure algorithmic logic in Python to categorize budgets, recommend specialized packages, organize preparation checklists, and compute a dynamic Travel Readiness Score.
